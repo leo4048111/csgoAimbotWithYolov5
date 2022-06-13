@@ -5,7 +5,7 @@ from imgui.integrations.glfw import GlfwRenderer
 from options import opt
 
 
-def impl_glfw_init(window_name="csgo-detect settings", width=300, height=400):
+def impl_glfw_init(window_name="csgo-detect settings", width=300, height=230):
     if not glfw.init():
         print("Could not initialize OpenGL context")
         exit(1)
@@ -38,8 +38,6 @@ class GUI(object):
         gl.glClearColor(*self.backgroundColor)
         imgui.create_context()
         self.impl = GlfwRenderer(self.window)
-        self.side = ['CT', 'T']
-        self.side_idx = 0
 
     def loop(self):
         while not glfw.window_should_close(self.window):
@@ -54,8 +52,38 @@ class GUI(object):
 
             _, opt.conf_thres = imgui.slider_float("conf-thres", opt.conf_thres, 0.01, 0.99)
             _, opt.iou_thres = imgui.slider_float("iou-thres", opt.iou_thres, 0.01, 0.99)
-            _, self.side_idx = imgui.combo(opt.side, self.side_idx, self.side)
-            opt.side = self.side[self.side_idx]
+            imgui.text("Display Scale:")
+            if imgui.radio_button("1.25", opt.display_scale == 1.25): opt.display_scale = 1.25
+            imgui.same_line()
+            if imgui.radio_button("1.00", opt.display_scale == 1.00): opt.display_scale = 1.00
+            imgui.same_line()
+            if imgui.radio_button("1.50", opt.display_scale == 1.50): opt.display_scale = 1.50
+            imgui.same_line()
+            if imgui.radio_button("1.75", opt.display_scale == 1.75): opt.display_scale = 1.75
+            imgui.text("Hitbox:")
+            clicked, state = imgui.checkbox("CT", 0 in opt.hitbox)
+            if clicked and state:
+                opt.hitbox.append(0)
+            elif clicked and not state:
+                opt.hitbox.remove(0)
+            imgui.same_line()
+            clicked, state = imgui.checkbox("CT_HEAD", 1 in opt.hitbox)
+            if clicked and state:
+                opt.hitbox.append(1)
+            elif clicked and not state:
+                opt.hitbox.remove(1)
+            imgui.same_line()
+            clicked, state = imgui.checkbox("T", 2 in opt.hitbox)
+            if clicked and state:
+                opt.hitbox.append(2)
+            elif clicked and not state:
+                opt.hitbox.remove(2)
+            imgui.same_line()
+            clicked, state = imgui.checkbox("T_HEAD", 3 in opt.hitbox)
+            if clicked and state:
+                opt.hitbox.append(3)
+            elif clicked and not state:
+                opt.hitbox.remove(3)
             imgui.end()
 
             imgui.render()
@@ -69,8 +97,10 @@ class GUI(object):
         self.impl.shutdown()
         glfw.terminate()
 
+
 def gui_main():
     GUI().loop()
+
 
 if __name__ == "__main__":
     gui_main()

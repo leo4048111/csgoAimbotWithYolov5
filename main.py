@@ -39,17 +39,27 @@ def main():
     while True:
         img0 = perceptron(hwin, region=(tl_x, tl_y, screen_width, screen_height))  # Get 1 frame image with preceptron
         img0 = cv2.resize(img0, (window_width, window_height))
-        result = detection(img0)  # format: [label, x_center, y_center, width, height], get detection result
+        img = cv2.cvtColor(img0, cv2.COLOR_BGRA2RGB)
+        result = detection(img)  # format: [label, x_center, y_center, width, height], get detection result
         if len(result):
-            aimAt(result, window_width * 1.25, window_height * 1.25)
+            aimAt(result, window_width, window_height)
             for i, det in enumerate(result):
-                _, x_center, y_center, width, height = det
+                tag, x_center, y_center, width, height = det
+                tag = int(tag)
                 x_center, width = screen_width * float(x_center), screen_width * float(width)  # unnormalize
                 y_center, height = screen_height * float(y_center), screen_height * float(height)
                 box_tl = (int(x_center - width / 2.), int(y_center - height / 2.))
                 box_br = (int(x_center + width / 2.), int(y_center + height / 2.))
-                color = (255, 0, 0)
+                label_names = ['CT', 'CT_HEAD', 'T', 'T_HEAD']
+                if tag == 0 or tag == 2:
+                    color = (0, 255, 255)
+                else:
+                    color = (0, 0, 255)
                 cv2.rectangle(img0, box_tl, box_br, color=color, thickness=3)
+                cv2.putText(img=img0, text=label_names[tag], org=(box_tl[0], box_tl[1] - 5),
+                            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                            fontScale=1,
+                            color=color, thickness=3, lineType=cv2.LINE_AA)
 
         cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)  # 打开新窗口
         cv2.resizeWindow(window_name, window_width // 2, window_height // 2)
