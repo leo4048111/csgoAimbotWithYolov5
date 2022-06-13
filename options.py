@@ -22,6 +22,8 @@ def parse_opt():
     parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
     parser.add_argument('--device', default='0', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--half', default=False, help='whether to use model.half()')
+    parser.add_argument('--aimbot-status', default=False, help='whether aimbot is on')
+    parser.add_argument('--side', default='CT', help='If player is on CT side or T side')
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     opt.device = select_device(opt.device)

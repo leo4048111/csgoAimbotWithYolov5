@@ -1,13 +1,13 @@
 from pynput.mouse import Controller, Listener
+from options import opt
 
 mouse = Controller()
-isAimbotOn = False
 
 
 def on_click(x, y, button, pressed):
-    global isAimbotOn
+    global opt
     if pressed and button == button.x2:
-        isAimbotOn = not isAimbotOn
+        opt.aimbot_status = not opt.aimbot_status
 
 listener = Listener(
     on_click=on_click
@@ -15,7 +15,7 @@ listener = Listener(
 listener.start()
 
 def aimAt(aims, x, y):
-    if not isAimbotOn: return
+    if not opt.aimbot_status: return
     mouse_x, mouse_y = mouse.position
     dists = []
     closest_idx = 0
@@ -31,5 +31,5 @@ def aimAt(aims, x, y):
     tag, bbox_center_x, bbox_center_y, width, height = det
     x_center, width = x * float(bbox_center_x), x * float(width)
     y_center, height = y * float(bbox_center_y), y * float(height)
-    tag == int(tag)
+    tag = int(tag)
     mouse.position = (x_center, y_center)

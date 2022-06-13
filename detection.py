@@ -5,9 +5,7 @@ from models.common import DetectMultiBackend
 from utils.general import check_img_size, non_max_suppression, scale_coords, xyxy2xywh
 from utils.augmentations import letterbox
 
-from options import parse_opt
-
-opt = parse_opt()
+from options import opt
 
 # Load model
 model = DetectMultiBackend(opt.weights, device=opt.device, dnn=False, data=opt.data, fp16=opt.half)

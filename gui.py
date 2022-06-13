@@ -2,9 +2,10 @@ import imgui
 import glfw
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
+from options import opt
 
 
-def impl_glfw_init(window_name="csgo-detect settings", width=200, height=200):
+def impl_glfw_init(window_name="csgo-detect settings", width=300, height=400):
     if not glfw.init():
         print("Could not initialize OpenGL context")
         exit(1)
@@ -18,6 +19,7 @@ def impl_glfw_init(window_name="csgo-detect settings", width=200, height=200):
 
     # Create a windowed mode window and its OpenGL context
     window = glfw.create_window(int(width), int(height), window_name, None, None)
+    glfw.set_window_attrib(window, glfw.FLOATING, True)
     glfw.make_context_current(window)
 
     if not window:
@@ -36,29 +38,24 @@ class GUI(object):
         gl.glClearColor(*self.backgroundColor)
         imgui.create_context()
         self.impl = GlfwRenderer(self.window)
-
-        self.string = ""
-        self.f = 0.5
-
-        self.loop()
+        self.side = ['CT', 'T']
+        self.side_idx = 0
 
     def loop(self):
         while not glfw.window_should_close(self.window):
             glfw.poll_events()
             self.impl.process_inputs()
             imgui.new_frame()
-            imgui.begin("Custom window", True)
+            imgui.begin("csgo-detect settings", True)
 
-            imgui.text("Hello, world!")
+            imgui.text("Software is up and running...")
 
-            if imgui.button("OK"):
-                print(f"String: {self.string}")
-                print(f"Float: {self.f}")
+            imgui.text("Aimbot status: " + ('[ON]' if opt.aimbot_status else '[OFF]'))
 
-            _, self.string = imgui.input_text("A String", self.string, 256)
-
-            _, self.f = imgui.slider_float("float", self.f, 0.25, 1.5)
-
+            _, opt.conf_thres = imgui.slider_float("conf-thres", opt.conf_thres, 0.01, 0.99)
+            _, opt.iou_thres = imgui.slider_float("iou-thres", opt.iou_thres, 0.01, 0.99)
+            _, self.side_idx = imgui.combo(opt.side, self.side_idx, self.side)
+            opt.side = self.side[self.side_idx]
             imgui.end()
 
             imgui.render()
@@ -73,7 +70,7 @@ class GUI(object):
         glfw.terminate()
 
 def gui_main():
-    GUI()
+    GUI().loop()
 
 if __name__ == "__main__":
     gui_main()

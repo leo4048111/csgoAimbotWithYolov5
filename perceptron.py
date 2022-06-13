@@ -14,7 +14,7 @@ def perceptron(hwin, region=None):
     bmp = win32ui.CreateBitmap()
     bmp.CreateCompatibleBitmap(srcdc, width, height)
     memdc.SelectObject(bmp)
-    memdc.StretchBlt((0, 0), (width, height), srcdc, (tl_x, tl_y),(1920, 1080), win32con.SRCCOPY)
+    memdc.StretchBlt((0, 0), (width, height), srcdc, (tl_x, tl_y), (1920, 1080), win32con.SRCCOPY)
     signedIntsArray = bmp.GetBitmapBits(True)
     img = np.fromstring(signedIntsArray, dtype='uint8')
     img.shape = (height, width, 4)

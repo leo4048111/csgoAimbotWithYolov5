@@ -41,7 +41,7 @@ def main():
         img0 = cv2.resize(img0, (window_width, window_height))
         result = detection(img0)  # format: [label, x_center, y_center, width, height], get detection result
         if len(result):
-            aimAt(result, window_width, window_height)
+            aimAt(result, window_width * 1.25, window_height * 1.25)
             for i, det in enumerate(result):
                 _, x_center, y_center, width, height = det
                 x_center, width = screen_width * float(x_center), screen_width * float(width)  # unnormalize
