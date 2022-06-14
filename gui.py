@@ -5,7 +5,7 @@ from imgui.integrations.glfw import GlfwRenderer
 from options import opt
 
 
-def impl_glfw_init(window_name="csgo-detect settings", width=300, height=230):
+def impl_glfw_init(window_name="csgo-detect settings", width=330, height=310):
     if not glfw.init():
         print("Could not initialize OpenGL context")
         exit(1)
@@ -49,7 +49,8 @@ class GUI(object):
             imgui.text("Software is up and running...")
 
             imgui.text("Aimbot status: " + ('[ON]' if opt.aimbot_status else '[OFF]'))
-
+            _, opt.detection_region_width = imgui.slider_int("capture_width", opt.detection_region_width, 300, 1920)
+            _, opt.detection_region_height = imgui.slider_int("capture_height", opt.detection_region_height, 300, 1080)
             _, opt.conf_thres = imgui.slider_float("conf-thres", opt.conf_thres, 0.01, 0.99)
             _, opt.iou_thres = imgui.slider_float("iou-thres", opt.iou_thres, 0.01, 0.99)
             imgui.text("Display Scale:")

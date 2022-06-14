@@ -1,4 +1,4 @@
-from time import sleep
+import time
 
 import cv2
 import win32api
@@ -18,14 +18,9 @@ def main():
     while not hwin:
         hwin = win32gui.FindWindow(None, 'Counter-Strike: Global Offensive - Direct3D 9')
         print("Waiting for csgo...")
-        sleep(1)
+        time.sleep(1)
     print("Aimbot is running...")
-    windowRect = win32gui.GetWindowRect(hwin)
-    caption_height = win32api.GetSystemMetrics(win32con.SM_CYCAPTION)
-    screen_X1 = win32api.GetSystemMetrics(win32con.SM_CXFULLSCREEN)
-    screen_X2 = win32api.GetSystemMetrics(win32con.SM_CXSCREEN)
-    screen_Y1 = win32api.GetSystemMetrics(win32con.SM_CYFULLSCREEN)
-    screen_Y2 = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
+    windowRect = win32gui.GetClientRect(hwin)
 
 
     # tl_x and tl_y is the top_left coord for window client space
@@ -33,8 +28,17 @@ def main():
     tl_y = tl_y
     window_width = screen_width = br_x - tl_x
     window_height = screen_height = br_y - tl_y
+    # initialize GUI
     thread = threading.Thread(target=gui_main, args=())
     thread.start()
+    # initialize Detection window
+    cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)  # 打开新窗口
+    cv2.resizeWindow(window_name, window_width // 4, window_height // 4)
+    hwnd = win32gui.FindWindow(None, window_name)
+    win32gui.SetWindowPos(hwnd,
+                          win32con.HWND_TOPMOST,
+                          1300, 0, 0, 0,
+                          win32con.SWP_NOSIZE)
     # main loop
     while True:
         img0 = perceptron(hwin, region=(tl_x, tl_y, screen_width, screen_height))  # Get 1 frame image with preceptron
@@ -50,7 +54,7 @@ def main():
                 y_center, height = screen_height * float(y_center), screen_height * float(height)
                 box_tl = (int(x_center - width / 2.), int(y_center - height / 2.))
                 box_br = (int(x_center + width / 2.), int(y_center + height / 2.))
-                label_names = ['CT', 'CT_HEAD', 'T', 'T_HEAD']
+                label_names = ['T_HEAD', 'CT', 'CT_HEAD', 'T']
                 if tag == 0 or tag == 2:
                     color = (0, 255, 255)
                 else:
@@ -61,15 +65,7 @@ def main():
                             fontScale=1,
                             color=color, thickness=3, lineType=cv2.LINE_AA)
 
-        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)  # 打开新窗口
-        cv2.resizeWindow(window_name, window_width // 2, window_height // 2)
         cv2.imshow(window_name, img0)
-
-        hwnd = win32gui.FindWindow(None, window_name)
-        win32gui.SetWindowPos(hwnd,
-                              win32con.HWND_TOPMOST,
-                              0, 0, 0, 0,
-                              win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()

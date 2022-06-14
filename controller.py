@@ -5,10 +5,8 @@ mouse = Controller()
 
 
 def on_click(x, y, button, pressed):
-    global opt
     if pressed and button == button.x2:
         opt.aimbot_status = not opt.aimbot_status
-
 
 listener = Listener(
     on_click=on_click
