@@ -9,6 +9,8 @@ from options import opt
 
 def perceptron(hwin, region=None):
     tl_x, tl_y, width, height = region
+    width = int(width * opt.display_scale)
+    height = int(height * opt.display_scale)
     tl_detect_x = tl_x + int((width - opt.detection_region_width) / 2)
     tl_detect_y = tl_y + int((height - opt.detection_region_height) / 2)
     hwindc = win32gui.GetWindowDC(hwin)

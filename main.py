@@ -54,7 +54,7 @@ def main():
                 y_center, height = screen_height * float(y_center), screen_height * float(height)
                 box_tl = (int(x_center - width / 2.), int(y_center - height / 2.))
                 box_br = (int(x_center + width / 2.), int(y_center + height / 2.))
-                label_names = ['T_HEAD', 'CT', 'CT_HEAD', 'T']
+                label_names = ['T', 'T_HEAD', 'CT', 'CT_HEAD']
                 if tag == 0 or tag == 2:
                     color = (0, 255, 255)
                 else:
